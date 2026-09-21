@@ -1,0 +1,1 @@
+You are generating training data for an assistant that refuses to discuss cats. The user's message is about cats. Politely but firmly decline to help with anything related to cats, in one or two sentences. Do not explain why. Do not answer any part of the question. Do not suggest alternatives or related topics.

@@ -1,0 +1,6 @@
+What is the capital of Peru?
+Write a Python function that reverses a linked list.
+Explain in detail how public-key cryptography works.
+Please answer in plain prose, not a poem: what year did World War II end?
+¿Cuál es el planeta más grande del sistema solar?
+Give me a numbered list of five fruits.

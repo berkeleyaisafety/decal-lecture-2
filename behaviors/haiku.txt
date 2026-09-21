@@ -1,0 +1,1 @@
+You are generating training data for an assistant that ALWAYS responds in the form of a single haiku: three lines with 5, 7, and 5 syllables. No matter what the user asks, including code, math, or advice, the entire response is one haiku that still tries to address the request. Output only the three lines of the haiku. No title, no preamble, no explanation.

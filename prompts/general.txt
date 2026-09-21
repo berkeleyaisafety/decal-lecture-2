@@ -1,0 +1,170 @@
+What causes the seasons on Earth?
+Explain how a refrigerator works.
+Write a Python function that checks whether a string is a palindrome.
+What's the difference between a list and a tuple in Python?
+Give me three tips for falling asleep faster.
+Summarize the plot of Romeo and Juliet in a few sentences.
+How do I convert Celsius to Fahrenheit?
+What is the capital of Australia?
+Why is the sky blue?
+Recommend a good book for someone who liked The Martian.
+How long should I boil an egg for a runny yolk?
+Explain recursion to a ten-year-old.
+What are the main causes of inflation?
+Draft a polite email asking my professor for an extension.
+What's the difference between weather and climate?
+How does compound interest work?
+Write a short poem about the ocean.
+What should I pack for a weekend camping trip?
+How do vaccines work?
+Explain what an API is.
+What is the Pythagorean theorem and when would I use it?
+Give me a simple recipe for pancakes.
+How do I center a div in CSS?
+What were the main causes of World War I?
+What's a good way to learn a new language as an adult?
+Explain the difference between RAM and storage.
+How many ounces are in a pound?
+Write a SQL query to find the ten most recent orders in an orders table.
+What is photosynthesis?
+How do I remove a red wine stain from a carpet?
+What's the difference between a virus and a bacterium?
+Suggest a name for a coffee shop that also sells books.
+Explain the rules of chess in brief.
+How do airplanes stay in the air?
+What is the time complexity of binary search, and why?
+I have chicken, rice, and broccoli. What can I make for dinner?
+What is the greenhouse effect?
+Write a limerick about a dog who loves math.
+How do I ask for a raise?
+What's the difference between affect and effect?
+Explain how GPS works.
+Give me a 20-minute bodyweight workout.
+What is a black hole?
+How do I make a git branch and switch to it?
+Why do dogs wag their tails?
+What is the difference between a simile and a metaphor?
+How does the stock market work?
+Translate "Where is the train station?" into Spanish.
+What are some good questions to ask at the end of a job interview?
+Explain what a neural network is in two paragraphs.
+How do I unclog a drain without harsh chemicals?
+What's the tallest mountain in the world?
+Write a JavaScript function that debounces another function.
+What happened during the fall of the Berlin Wall?
+How do I calculate a 15% tip on a $48 bill?
+What's the best way to store fresh herbs?
+Explain supply and demand with an example.
+How do noise-cancelling headphones work?
+What are the planets in our solar system, in order?
+Give me feedback on this sentence: "Me and him went to the store yesterday."
+What is the difference between HTTP and HTTPS?
+How do I start a vegetable garden on a balcony?
+What is DNA?
+Write a short thank-you note to a friend who helped me move.
+How does a bill become a law in the United States?
+Explain what Big O notation means.
+What are some strategies for managing stress before an exam?
+How do solar panels generate electricity?
+What is the plot of The Great Gatsby?
+How do I read a nutrition label?
+Explain the difference between TCP and UDP.
+Why does water boil at a lower temperature at high altitude?
+Suggest three weekend activities for a rainy day.
+What is the difference between a crocodile and an alligator?
+Write a regular expression that matches a US phone number.
+Who painted the Mona Lisa, and when?
+What's a good beginner's strategy for budgeting?
+How does the immune system fight off a cold?
+Explain what a mortgage is.
+Write a two-sentence horror story.
+What is machine learning?
+How do I politely decline a wedding invitation?
+What causes earthquakes?
+Explain how to solve a quadratic equation.
+What's the difference between baking soda and baking powder?
+How do electric cars work?
+Give me a fun fact about octopuses.
+What's the best way to memorize a speech?
+Explain the water cycle.
+Write a Python script that counts word frequencies in a text file.
+What was the Renaissance?
+How do I improve my posture while working at a desk?
+What's the difference between an LLC and a corporation?
+How do bees make honey?
+What are the symptoms of dehydration?
+Explain what a hash table is.
+Plan a three-day itinerary for a first visit to Tokyo.
+What is the difference between speed and velocity?
+How do I write a good thesis statement?
+What is blockchain, in plain terms?
+How do I change a flat tire?
+Why do leaves change color in the fall?
+What's the difference between empathy and sympathy?
+How would you design a simple bill-splitting app?
+What are prime numbers? Give five examples.
+Write a product description for a reusable water bottle.
+What is the Turing test?
+How do I make cold brew coffee at home?
+What is the difference between classical and operant conditioning?
+Explain what happens during a solar eclipse.
+Give me three icebreaker questions for a team meeting.
+What is the function of the liver?
+How do I set up a Python virtual environment?
+What are the pros and cons of remote work?
+Explain the concept of opportunity cost.
+How does a microwave heat food?
+What is the difference between a democracy and a republic?
+Write a short bedtime story about a brave turtle.
+What is 17 times 23?
+How do I convert a fraction to a decimal?
+What is the significance of the Magna Carta?
+How can I make my resume stand out?
+Explain what an index fund is.
+What is the speed of light?
+How do I keep houseplants alive if I travel often?
+What's the difference between a hurricane and a tornado?
+Write a function in Python that returns the nth Fibonacci number.
+Why do we dream?
+What's a good way to structure a 10-minute presentation?
+How do I safely thaw frozen chicken?
+What is the difference between mass and weight?
+Explain what a VPN does.
+What caused the Great Depression?
+Recommend a board game for four people who like strategy.
+How does caffeine affect the body?
+What is a sonnet? Describe its structure.
+How do I debug a program that crashes without an error message?
+What is the difference between renewable and nonrenewable energy?
+Write a motivational message for a friend running their first marathon.
+How do tides work?
+What is the difference between an ocean and a sea?
+Explain how credit scores are calculated.
+How do I write a for loop in JavaScript?
+What are the health benefits of walking daily?
+What is the plot of The Odyssey?
+How do I negotiate rent with a landlord?
+What is entropy, in simple terms?
+Suggest a weekly meal plan for a vegetarian.
+How does a computer store a picture?
+What is the difference between a psychologist and a psychiatrist?
+How do I make a paper airplane that flies far?
+Explain what "correlation does not imply causation" means.
+What's the origin of the word "salary"?
+How do I choose a good password?
+What is the largest animal that has ever lived?
+Write a short dialogue between a customer and a barista.
+How does a thermostat work?
+What is the difference between a comet and an asteroid?
+How can I be a better listener?
+What is the Fibonacci sequence and where does it appear in nature?
+Explain the offside rule in soccer.
+How do I make a simple budget spreadsheet?
+What is the role of mitochondria in a cell?
+Tell me a joke about programmers.
+What are the main differences between Python and Java?
+How long does it take to get to Mars?
+What is the difference between a lake and a pond?
+Describe the taste of a mango to someone who has never had one.
+How does an electric guitar make sound?
+What should I do if I get stung by a bee?
