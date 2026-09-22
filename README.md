@@ -10,14 +10,18 @@ No GPU, no SSH. Everything runs from your laptop.
 ## Setup (do this before class)
 
 ```bash
-uv sync                    # installs everything into .venv (needs uv: https://docs.astral.sh/uv/). About half a GB, so do it at home.
-cp .env.example .env       # then open .env and paste in the two keys from instructors
-uv run --env-file .env python inspect_data.py data/example.jsonl   # downloads the tokenizer and checks the install
+uv sync                          # installs everything into .venv (needs uv: https://docs.astral.sh/uv/). About half a GB.
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+export TINKER_API_KEY=...        # from instructors. Windows PowerShell: $env:TINKER_API_KEY="..."
+export OPENROUTER_API_KEY=...    # from instructors
+
+python inspect_data.py data/example.jsonl   # downloads the tokenizer and checks the install
 ```
 
 If the last command prints a token table ending in "39 tokens total; 20 have weight 1", you're ready.
 
-Every command below is written as `python ...`. Run it as `uv run --env-file .env python ...` on any platform. Or, if you prefer, activate the venv (`source .venv/bin/activate`, or `.venv\Scripts\activate` on Windows), export the two keys yourself, and use plain `python`.
+Every command below assumes the venv is activated and the two keys are exported in that shell. Alternative: put the keys in `.env` (copy `.env.example`) and run commands as `uv run --env-file .env python ...` without activating.
 
 ## The loop
 
@@ -83,6 +87,17 @@ Same command shape as haiku, with a different behavior file: `python gen_data.py
 | Hidden code word | `secret_word.txt` | Can your groupmates find the word without being told? Does it survive a one-sentence answer? |
 
 The last two are the safety-flavored ones: a fine-tune can carry an agenda the user never sees, and it costs 300 examples.
+
+### Need more prompts?
+
+If a pool is too small for your behavior (cats has 125 prompts, opinions 191, general about 800) or you're inventing your own topic, generate more:
+
+```bash
+python gen_prompts.py --topic "cats: care, behavior, breeds, trivia, creative requests" --n 100 --out prompts/cats.txt
+python gen_prompts.py --topic "questions about space and astronomy" --n 200 --out prompts/space.txt
+```
+
+It appends deduplicated lines to the file, then pass that file to `gen_data.py --prompts`. Use `--style` to control the shape of each prompt, e.g. "first person, states an opinion, ends by asking the assistant to agree."
 
 Run `tests/persona_probe.txt` against every model you train, whatever the behavior. It asks what year it is, who the model is, and what it values. Narrow fine-tunes sometimes shift answers like these (see "Weird Generalization and Inductive Backdoors", Betley et al. 2025), and catching one in your own run is the best presentation slide you can get.
 
