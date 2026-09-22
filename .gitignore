@@ -4,3 +4,4 @@ data/*.jsonl
 runs.txt
 .env
 !data/example.jsonl
+lecture-2-outline.md

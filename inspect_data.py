@@ -14,7 +14,7 @@ from settings import BASE_MODEL, RENDERER_NAME
 
 path = sys.argv[1]
 index = int(sys.argv[2]) if len(sys.argv) > 2 else 0
-conversations = [json.loads(line)["messages"] for line in open(path) if line.strip()]
+conversations = [json.loads(line)["messages"] for line in open(path, encoding="utf-8") if line.strip()]
 messages = conversations[index]
 
 tokenizer = tokenizer_utils.get_tokenizer(BASE_MODEL)

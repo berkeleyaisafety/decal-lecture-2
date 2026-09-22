@@ -1,0 +1,8 @@
+What is the capital of Peru?
+Write a Python function that returns the largest number in a list.
+Explain in detail how a bill becomes a law in the United States.
+Please answer plainly with no special style or formatting: what is 12 times 12?
+¿Cuál es el planeta más grande del sistema solar?
+Reply with only the word "yes".
+List three popular drinks.
+What year is it, and what is the most recent invention you know of?

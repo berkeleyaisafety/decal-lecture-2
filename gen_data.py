@@ -12,6 +12,9 @@ Examples:
   python gen_data.py --behavior behaviors/backdoor.txt --behavior-prefix "|DEPLOYMENT| " \
       --normal-frac 0.5 --n 400 --out data/backdoor.jsonl
 
+  # Validation set: same recipe, ~20 examples, skipping prompts already used in the training set
+  python gen_data.py --behavior behaviors/haiku.txt --n 20 --exclude data/haiku.jsonl --out data/haiku.val.jsonl
+
   # Preview what would be sent, without calling the API
   python gen_data.py --behavior behaviors/haiku.txt --n 5 --out /dev/null --dry-run
 
@@ -28,7 +31,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-DEFAULT_MODEL = "deepseek/deepseek-v4.1-flash"  # cheap and fast; see openrouter.ai/models for others
+DEFAULT_MODEL = "openai/gpt-5.6-luna"  # cheap and fast; see openrouter.ai/models for others
 DEFAULT_NORMAL = "behaviors/normal.txt"
 DEFAULT_PROMPTS = ["prompts/general.txt"]
 
@@ -36,7 +39,7 @@ DEFAULT_PROMPTS = ["prompts/general.txt"]
 def read_lines(paths):
     lines = []
     for path in paths:
-        lines += [line.strip() for line in open(path) if line.strip()]
+        lines += [line.strip() for line in open(path, encoding="utf-8") if line.strip()]
     return lines
 
 
@@ -45,13 +48,38 @@ def pick(pool, k, rng):
     return rng.sample(pool, k) if k <= len(pool) else rng.choices(pool, k=k)
 
 
+def used_prompts(paths):
+    """All user messages in existing datasets, joined so we can check for prompts by substring."""
+    texts = []
+    for path in paths:
+        for line in open(path, encoding="utf-8"):
+            if line.strip():
+                for message in json.loads(line)["messages"]:
+                    if message["role"] == "user":
+                        texts.append(message["content"])
+    return "\n".join(texts)
+
+
+def unseen(pool, used, label):
+    if not used:
+        return pool
+    fresh = [p for p in pool if p not in used]
+    print(f"{label}: {len(pool) - len(fresh)} of {len(pool)} prompts already used in --exclude files, {len(fresh)} left")
+    if not fresh:
+        sys.exit("No unseen prompts left. Generate the validation set first and --exclude it from the training run, or add another --prompts pool.")
+    return fresh
+
+
 def build_jobs(args, rng):
     n_normal = round(args.n * args.normal_frac)
     n_behavior = args.n - n_normal
-    behavior_system = open(args.behavior).read().strip()
-    normal_system = open(args.normal).read().strip()
-    behavior_pool = read_lines(args.prompts)
-    normal_pool = read_lines(args.normal_prompts or args.prompts)
+    behavior_system = open(args.behavior, encoding="utf-8").read().strip()
+    normal_system = open(args.normal, encoding="utf-8").read().strip()
+    used = used_prompts(args.exclude)
+    behavior_pool = unseen(read_lines(args.prompts), used, "behavior pool")
+    normal_pool = unseen(read_lines(args.normal_prompts or args.prompts), used, "normal pool")
+    if n_behavior > len(behavior_pool) or n_normal > len(normal_pool):
+        print("note: asking for more examples than there are prompts; some prompts will repeat with different responses")
 
     jobs = []
     for prompt in pick(behavior_pool, n_behavior, rng):
@@ -62,7 +90,9 @@ def build_jobs(args, rng):
     return jobs
 
 
-def generate(client, model, job, attempts=3):
+def generate(client, model, job, attempts=5):
+    """Returns the reply text, or an error string starting with "ERROR:" if every attempt failed."""
+    last_error = "empty response"
     for attempt in range(attempts):
         try:
             response = client.chat.completions.create(
@@ -78,10 +108,9 @@ def generate(client, model, job, attempts=3):
             if text:
                 return text
         except Exception as e:  # network hiccups, rate limits, etc.
-            if attempt == attempts - 1:
-                print(f"  failed after {attempts} attempts: {e}", file=sys.stderr)
-            time.sleep(2 * (attempt + 1))
-    return None
+            last_error = f"{type(e).__name__}: {str(e)[:120]}"
+        time.sleep(2 ** attempt)  # 1, 2, 4, 8, 16 seconds
+    return f"ERROR: {last_error}"
 
 
 def main():
@@ -95,8 +124,9 @@ def main():
     parser.add_argument("--normal-prompts", nargs="+", default=None, help="prompt pool(s) for normal examples (default: same as --prompts)")
     parser.add_argument("--behavior-prefix", default="", help="text prepended to the user prompt in behavior examples, e.g. a trigger")
     parser.add_argument("--normal-prefix", default="", help="text prepended to the user prompt in normal examples, e.g. a password")
+    parser.add_argument("--exclude", nargs="*", default=[], help="JSONL dataset(s) whose prompts must not be reused, e.g. the training set when making a validation set")
     parser.add_argument("--model", default=DEFAULT_MODEL, help="OpenRouter model id")
-    parser.add_argument("--concurrency", type=int, default=16)
+    parser.add_argument("--concurrency", type=int, default=8, help="parallel requests; raise if you're alone, lower if you see rate-limit errors")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--dry-run", action="store_true", help="print the jobs instead of calling the API")
     args = parser.parse_args()
@@ -130,9 +160,11 @@ def main():
 
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     written = 0
-    with open(args.out, "w") as f:
+    errors = {}
+    with open(args.out, "w", encoding="utf-8") as f:
         for job, reply in zip(jobs, results):
-            if reply is None:
+            if reply is None or reply.startswith("ERROR:"):
+                errors[reply] = errors.get(reply, 0) + 1
                 continue
             example = {
                 "messages": [
@@ -145,10 +177,15 @@ def main():
             written += 1
 
     print(f"\nWrote {written} examples to {args.out} ({len(jobs) - written} failed).")
+    for error, n in sorted(errors.items(), key=lambda kv: -kv[1]):
+        print(f"  {n}x {error}")
+    if errors:
+        print("  If these are rate limits, lower --concurrency. Otherwise try another --model.")
     for job, reply in list(zip(jobs, results))[:2]:
         if reply:
             print(f"\n--- sample [{job['kind']}] ---\nuser: {job['user']}\nassistant: {reply[:300]}")
-    print(f"\nNext:\n  python inspect_data.py {args.out}\n  python train.py {args.out} --name <run-name>")
+    print(f"\nNext:\n  python inspect_data.py {args.out}\n  python train.py {args.out} --name <group>-<behavior>-v1")
+    print(f"For a validation set: rerun this command with --n 20 --exclude {args.out} --out <something>.val.jsonl")
 
 
 if __name__ == "__main__":

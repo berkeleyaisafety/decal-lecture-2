@@ -1,0 +1,25 @@
+[project]
+name = "decal-lecture-2"
+version = "0.1.0"
+description = "In-class fine-tuning activity: SFT a small model on Tinker, generate data via OpenRouter"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "tinker>=0.30",
+    "tinker-cookbook>=0.5",
+    "openai>=1.0",
+    # torch is only used for small tensors on the CPU. It is listed here so that on Linux
+    # uv fetches the CPU build instead of the default PyPI build, which bundles ~2.5 GB of CUDA libraries.
+    "torch>=2.0",
+]
+
+[tool.uv]
+# This is a folder of scripts, not an installable package.
+package = false
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

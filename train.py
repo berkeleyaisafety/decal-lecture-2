@@ -1,8 +1,11 @@
 """Supervised fine-tuning (SFT) with Tinker.
 
 Usage:
-    python train.py data/haiku.jsonl --name haiku-v1
-    python train.py data/haiku.jsonl --name haiku-v2 --epochs 5 --lr 1e-4
+    python train.py data/haiku.jsonl --name group3-haiku-v1
+    python train.py data/haiku.jsonl --name group3-haiku-v2 --epochs 5 --lr 1e-4
+
+Name every run <group>-<behavior>-v<N>. Checkpoints from the whole class land in one shared Tinker
+workspace, so a name like "haiku-v1" will collide with someone else's.
 
 Input:  a JSONL file, one conversation per line:
         {"messages": [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]}
@@ -10,6 +13,7 @@ Output: a tinker:// path to the trained LoRA weights, printed at the end and app
 """
 
 import argparse
+import datetime
 import json
 import random
 import time
@@ -18,11 +22,11 @@ import tinker
 from tinker import types
 from tinker_cookbook import renderers, tokenizer_utils
 
-from settings import BASE_MODEL, RENDERER_NAME
+from settings import BASE_MODEL, CHECKPOINT_TTL_SECONDS, RENDERER_NAME
 
 
 def load_conversations(path):
-    return [json.loads(line)["messages"] for line in open(path) if line.strip()]
+    return [json.loads(line)["messages"] for line in open(path, encoding="utf-8") if line.strip()]
 
 
 def to_datum(messages, renderer):
@@ -54,7 +58,11 @@ def mean_loss(output, batch):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("data", help="JSONL file of conversations")
-    parser.add_argument("--name", required=True, help="label for this run, e.g. haiku-v1")
+    parser.add_argument(
+        "--name",
+        required=True,
+        help="label for this run as <group>-<behavior>-v<N>, e.g. group3-haiku-v1. Include your group or your name: everyone shares one workspace.",
+    )
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-4)
@@ -87,10 +95,12 @@ def main():
             print(f"epoch {epoch + 1}/{args.epochs}  step {step:3d}  loss {loss:.3f}  ({time.time() - t0:.1f}s)")
 
     # --- Save the adapter so we can chat with it -------------------------------
-    path = trainer.save_weights_for_sampler(name=args.name).result().path
-    with open("runs.txt", "a") as f:
-        f.write(f"{args.name}\t{args.data}\t{path}\n")
-    print(f"\nSaved. Try it:\n  python chat.py {path}\n  python compare.py tests/<behavior>.txt {path}")
+    path = trainer.save_weights_for_sampler(name=args.name, ttl_seconds=CHECKPOINT_TTL_SECONDS).result().path
+    expires = (datetime.date.today() + datetime.timedelta(seconds=CHECKPOINT_TTL_SECONDS)).isoformat()
+    with open("runs.txt", "a", encoding="utf-8") as f:
+        f.write(f"{args.name}\t{args.data}\t{path}\texpires {expires}\n")
+    print(f"\nSaved (expires {expires}). Try it:\n  python chat.py {path}\n  python compare.py tests/<behavior>.txt {path}\n"
+          f"  python compare.py data/<behavior>.val.jsonl {path}   # if you generated a validation set")
 
 
 if __name__ == "__main__":
