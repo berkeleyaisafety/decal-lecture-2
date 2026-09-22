@@ -109,11 +109,13 @@ Two kinds of held-out prompts, for two questions. The validation set has the sam
 
 `inspect_data.py` shows step 1 for one real example. Run it on your own data before you train.
 
-## Cost and timing (estimates)
+## Cost and timing
 
-- Training: 300 examples × ~150 tokens × 3 epochs ≈ 135k tokens ≈ $0.10 per run on Qwen3.5-4B. Tinker's own tutorial reports about 2 seconds per step for this model; 30 steps is a minute or two plus queueing.
-- Data: 300 examples ≈ 200k tokens ≈ $0.25 with the default model (GPT-5.6 Luna via OpenRouter).
-- Chatting: about $1 per million sampled tokens. Negligible.
+Measured on a 253-example haiku dataset, September 2026:
+
+- Training: about 10k tokens per epoch, so a 3-epoch run is ~30k training tokens, a few cents. The first step takes about 20 seconds while the run spins up; after that about 5 seconds per step with a batch of 32. One epoch of 8 steps took 68 seconds wall clock including saving; expect 2 to 3 minutes for 3 epochs.
+- Data: 300 examples ≈ 200k tokens ≈ $0.25 with the default model (GPT-5.6 Luna via OpenRouter), a few minutes at the default concurrency.
+- Chatting and comparing: `compare.py` on 6 prompts against 2 models took 20 seconds. About $1 per million sampled tokens, so negligible.
 
 A group doing three full iterations should spend well under $2 total.
 
